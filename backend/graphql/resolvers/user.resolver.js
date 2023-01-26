@@ -66,15 +66,33 @@
 //     ],
 //   },
 const jwt = require("jsonwebtoken");
+const { hash, compare } = require("bcrypt");
+const { GraphQLError } = require("graphql");
 
-const signup = async (parent, args, contextValue, info) => {
+const signToken = async (user) => {
+  return await jwt.sign(
+    {
+      userId: user.id,
+      email: user.email,
+    },
+    process.env.TOKEN_KEY,
+    {
+      expiresIn: "2d",
+    }
+  );
+};
+
+const checkPassword = (password, realPassword) =>
+  compare(password, realPassword);
+
+const signup = async (_, args, contextValue) => {
   const { email, password, firstName, lastName, title } = args;
   const { db } = contextValue;
-
+  const hashedPassword = await hash(password, Number(process.env.SALT_ROUNDS));
   const user = await db
     .transaction(function (trx) {
       trx
-        .insert({ email: email, password: password })
+        .insert({ email: email, password: hashedPassword })
         .into("users")
         .returning("id")
         .then((res) => {
@@ -89,29 +107,78 @@ const signup = async (parent, args, contextValue, info) => {
             })
             .into("profiles")
             .then(() => {
-              return trx("users").where("users.id", id).select("id");
+              return trx("users")
+                .where("users.id", id)
+                .select("*")
+                .returning(["id, email"]);
             });
         })
         .then(trx.commit)
         .catch(trx.rollback);
     })
     .then(function (resp) {
-      console.log(resp);
       return resp[0];
     })
-    .catch(function (err) {
-      console.error("err is ", err);
+    .catch(() => {
+      throw new GraphQLError({
+        extensions: {
+          code: "INTERNAL_ERROR",
+        },
+      });
     });
 
-  // Create User
-  // Create Profile
-  // If both successful, tokenize data (ID)
-  // Return ID + Token
-  // Used to login user -> look into server auth vs client
-  console.log("user is ", user);
-  return user;
+  const token = signToken(user);
+
+  return {
+    token,
+    user,
+  };
+};
+
+const signin = async (_, args, contextValue) => {
+  const { email, password } = args;
+  const { db } = contextValue;
+
+  const user = await db
+    .select("id", "email", "password")
+    .from("users")
+    .where("email", email)
+    .returning(["id", "email", "password"])
+    .then((res) => res[0])
+    .catch(() => {
+      throw new GraphQLError({
+        extensions: {
+          code: "INTERNAL_ERROR",
+        },
+      });
+    });
+
+  if (!user) {
+    throw new GraphQLError("Incorrect email and password", {
+      extensions: {
+        code: "NOT_FOUND",
+      },
+    });
+  }
+
+  const isValidPassword = await checkPassword(password, user.password);
+  if (!isValidPassword) {
+    throw new GraphQLError("Incorrect email and password", {
+      extensions: {
+        code: "NOT_FOUND",
+      },
+    });
+  }
+
+  const token = signToken(user);
+
+  return {
+    token,
+    user,
+  };
 };
 
 module.exports = {
+  signin,
   signup,
 };

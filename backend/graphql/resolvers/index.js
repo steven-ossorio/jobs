@@ -1,12 +1,12 @@
-const { signup } = require("./user.resolver");
+const { signup, signin } = require("./user.resolver");
 
 const resolvers = {
   Query: {
     books: signup,
   },
   Mutation: {
-    books: signup,
     register: signup,
+    login: signin,
   },
 };
 
