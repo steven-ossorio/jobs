@@ -1,4 +1,48 @@
+import { SIGN_UP_USER } from "@/graphql/mutations/auth.mutation";
+import { useMutation } from "@apollo/client";
+import { useState } from "react";
+
 const SignUp = () => {
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    title: "",
+  });
+
+  const [signup] = useMutation(SIGN_UP_USER, {
+    variables: {
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      title: userData.title,
+      email: userData.email,
+      password: userData.password,
+    },
+  });
+
+  const onInputChange = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (userData.password !== userData.confirmPassword) {
+      return;
+    }
+
+    signup()
+      .then((res) => {
+        // res.data.register
+        // Grab the user data
+        // Save token into localStorage
+        // Save userInfo into localStorage -> used to query other information when need
+        // Basic info - userId, imageUrl, firstName, lastName, alias (initials)
+      })
+      .catch((eerr) => console.log(eerr));
+  };
+
   return (
     <div className="flex min-h-full items-center justify-center align-middle py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full flex justify-center">
@@ -13,50 +57,56 @@ const SignUp = () => {
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
                   <label
-                    htmlFor="firstname"
+                    htmlFor="firstName"
                     className="block mb-2 text-sm sm:text-lg font-medium text-gray-900 dark:text-white"
                   >
                     First name
                   </label>
                   <input
                     type="text"
-                    name="firstname"
-                    id="firstname"
+                    name="firstName"
+                    id="firstName"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="John"
+                    value={userData.firstName}
+                    onChange={onInputChange}
                     required={true}
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="lastname"
+                    htmlFor="lastName"
                     className="block mb-2 text-sm sm:text-lg font-medium text-gray-900 dark:text-white"
                   >
                     Last name
                   </label>
                   <input
                     type="text"
-                    name="lastname"
-                    id="lastname"
+                    name="lastName"
+                    id="lastName"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Miller"
+                    value={userData.lastName}
+                    onChange={onInputChange}
                     required={true}
                   />
                 </div>
               </div>
               <div>
                 <label
-                  htmlFor="jobTitel"
+                  htmlFor="title"
                   className="block mb-2 text-sm sm:text-lg font-medium text-gray-900 dark:text-white"
                 >
                   Title
                 </label>
                 <input
                   type="text"
-                  name="jobTitle"
-                  id="jobTitle"
+                  name="title"
+                  id="title"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Software Engineer - Not required"
+                  value={userData.title}
+                  onChange={onInputChange}
                   required=""
                 />
               </div>
@@ -73,6 +123,8 @@ const SignUp = () => {
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="email@gmail.com"
+                  value={userData.email}
+                  onChange={onInputChange}
                   required="*"
                 />
               </div>
@@ -89,27 +141,32 @@ const SignUp = () => {
                   id="password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm md:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="•••••••••"
+                  value={userData.password}
+                  onChange={onInputChange}
                   required=""
                 />
               </div>{" "}
               <div>
                 <label
-                  htmlFor="confirm-password"
+                  htmlFor="confirmPassword"
                   className="block mb-2 text-sm md:text-lg font-medium text-gray-900 dark:text-white"
                 >
                   Confirm password
                 </label>
                 <input
                   type="password"
-                  name="confirm-password"
-                  id="confirm-password"
+                  name="confirmPassword"
+                  id="confirmPassword"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm md:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="•••••••••"
+                  value={userData.confirmPassword}
+                  onChange={onInputChange}
                   required=""
                 />
               </div>
             </div>
             <button
+              onClick={onSubmit}
               type="submit"
               className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-700  py-2 px-4 text-sm md:text-lg font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
