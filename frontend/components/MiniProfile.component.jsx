@@ -23,9 +23,9 @@ const MiniProfile = ({
         }`}
       >
         <div className="absolute inset-0 mx-auto -mt-1 rounded-lg rounded-t-non">
-          <div className="relative h-80 w-4/5 md:w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 p-1">
-            <div className="absolute inset-0">
-              <div className="flex flex-col items-center pb-10">
+          <div className="relative h-80 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex flex-col absolute inset-0 justify-between">
+              <div className="flex flex-col items-center self-center">
                 {imageUrl ? (
                   <img
                     className="w-24 h-24 mb-3 rounded-full shadow-lg object-center object-cover mt-3"
@@ -49,6 +49,8 @@ const MiniProfile = ({
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {company}
                 </span>
+              </div>
+              <div>
                 <div className="relative">
                   {userInfo === null && (
                     <div className="absolute z-30 text-sm bottom-0">
@@ -56,8 +58,10 @@ const MiniProfile = ({
                     </div>
                   )}
                   <div className={`${userInfo !== null ? "" : "blur-md"}`}>
-                    <div className={`flex mt-4 space-x-3 md:mt-6`}>
-                      <div className="flex justify-center self-center">
+                    <div
+                      className={`flex justify-center mt-4 space-x-3 md:mt-6`}
+                    >
+                      <div className="flex justify-center self-center cursor-pointer">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -73,7 +77,7 @@ const MiniProfile = ({
                           />
                         </svg>
                       </div>
-                      <div className="flex justify-center align-middle">
+                      <div className="flex justify-center align-middle cursor-pointer">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 448 512"
@@ -85,7 +89,7 @@ const MiniProfile = ({
                           />
                         </svg>
                       </div>
-                      <div className="flex justify-center">
+                      <div className="flex justify-center align-middle cursor-pointer">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 448 512"
@@ -98,66 +102,66 @@ const MiniProfile = ({
                         </svg>
                       </div>
                     </div>
-                    <div
-                      className="flex justify-end mr-5 mb-3"
-                      onClick={flipCard}
+                  </div>
+                  <div
+                    className="flex justify-end mr-5 mb-3 mt-5 cursor-pointer"
+                    onClick={flipCard}
+                  >
+                    <span className="mr-1">View more</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-6 h-6"
                     >
-                      <span className="mr-1">View more</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          className="absolute inset-0 h-full w-full rounded-xl bg-black px-12 text-center text-slate-200 [transform:rotateY(180deg)] [backface-visibility:hidden]"
-          style={{
-            backgroundColor: "#1F2937",
-          }}
-        >
-          <div className="flex min-h-full flex-col items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Jane Doe</h1>
-              <p className="text-lg">Photographer & Art</p>
-              <p className="text-base">
-                Lorem ipsum dolor sit amet consectetur adipisicing.
-              </p>
-              <button className="mt-2 rounded-md bg-neutral-800 py-1 px-2 text-sm">
-                Read More
-              </button>
-            </div>
-            <div className="flex justify-start mr-5 mb-3" onClick={flipCard}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span className="ml-1">Back</span>
-            </div>
+      </div>
+      <div
+        className="absolute inset-0 h-full w-full rounded-xl bg-black px-12 text-center text-slate-200 [transform:rotateY(180deg)] [backface-visibility:hidden]"
+        style={{
+          backgroundColor: "#1F2937",
+        }}
+      >
+        <div className="flex min-h-full flex-col items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Jane Doe</h1>
+            <p className="text-lg">Photographer & Art</p>
+            <p className="text-base">
+              Lorem ipsum dolor sit amet consectetur adipisicing.
+            </p>
+            <button className="mt-2 rounded-md bg-neutral-800 py-1 px-2 text-sm">
+              Read More
+            </button>
+          </div>
+          <div className="flex justify-start mr-5 mb-3" onClick={flipCard}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span className="ml-1">Back</span>
           </div>
         </div>
       </div>

@@ -58,22 +58,22 @@ const basicDatas = [
       { website: "" },
     ],
   },
-  // {
-  //   id: 4,
-  //   firstName: "Jen",
-  //   lastName: "Lu",
-  //   initials: "JL",
-  //   imageUrl: "",
-  //   title: "Frontend Developer",
-  //   company: "",
-  //   openForWork: false,
-  //   socials: [
-  //     { facebook: "" },
-  //     { linkedIn: "" },
-  //     { gitHub: "" },
-  //     { website: "" },
-  //   ],
-  // },
+  {
+    id: 4,
+    firstName: "Jen",
+    lastName: "Lu",
+    initials: "JL",
+    imageUrl: "",
+    title: "Frontend Developer",
+    company: "",
+    openForWork: false,
+    socials: [
+      { facebook: "" },
+      { linkedIn: "" },
+      { gitHub: "" },
+      { website: "" },
+    ],
+  },
 ];
 
 export default function Home() {
