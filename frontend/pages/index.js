@@ -1,6 +1,8 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
 import MiniProfiles from "@/components/MiniProfiles.component";
+import { useContext } from "react";
+import { UserContext } from "@/context/user.context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -56,22 +58,22 @@ const basicDatas = [
       { website: "" },
     ],
   },
-  {
-    id: 4,
-    firstName: "Jen",
-    lastName: "Lu",
-    initials: "JL",
-    imageUrl: "",
-    title: "Frontend Developer",
-    company: "",
-    openForWork: false,
-    socials: [
-      { facebook: "" },
-      { linkedIn: "" },
-      { gitHub: "" },
-      { website: "" },
-    ],
-  },
+  // {
+  //   id: 4,
+  //   firstName: "Jen",
+  //   lastName: "Lu",
+  //   initials: "JL",
+  //   imageUrl: "",
+  //   title: "Frontend Developer",
+  //   company: "",
+  //   openForWork: false,
+  //   socials: [
+  //     { facebook: "" },
+  //     { linkedIn: "" },
+  //     { gitHub: "" },
+  //     { website: "" },
+  //   ],
+  // },
 ];
 
 export default function Home() {

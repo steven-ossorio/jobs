@@ -1,4 +1,38 @@
+import { UserContext } from "@/context/user.context";
+import { SIGN_IN_USER } from "@/graphql/mutations/auth.mutation";
+import { useMutation } from "@apollo/client";
+import { Router, useRouter } from "next/router";
+import { useContext, useState } from "react";
+
 const SignIn = () => {
+  const { loginUser } = useContext(UserContext);
+  const router = useRouter();
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [signin] = useMutation(SIGN_IN_USER, {
+    variables: {
+      ...userData,
+    },
+  });
+
+  const onInputChange = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    signin()
+      .then((res) => {
+        loginUser(res.data.login);
+        router.push("/");
+      })
+      .catch((err) => console.log("err ", err));
+  };
+
   return (
     <div className="flex min-h-full items-center justify-center align-middle py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full flex justify-center">
@@ -23,6 +57,8 @@ const SignIn = () => {
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="email@gmail.com"
+                  value={userData.email}
+                  onChange={onInputChange}
                   required="*"
                 />
               </div>
@@ -39,11 +75,14 @@ const SignIn = () => {
                   id="password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm md:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="•••••••••"
+                  value={userData.password}
+                  onChange={onInputChange}
                   required=""
                 />
               </div>{" "}
             </div>
             <button
+              onClick={onSubmit}
               type="submit"
               className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-700  py-2 px-4 text-sm md:text-lg font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
