@@ -22,16 +22,32 @@ const typeDefs = `#graphql
     user: User    
   }
 
+  type Profile {
+    id: ID
+    firstName: String
+    lastName: String
+    initials: String
+    aboutMe: String
+    company: String
+    title: String
+    yoe: Int
+    isOpenForWork: Boolean
+    recentlyLaidOff: Boolean
+    image_url: String
+  }
+
 
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     books(email: String, password: String): [Book]
+    fetchProfile(userId: Int): Profile 
   }
   type Mutation {
     register(email: String, password: String, firstName: String, lastName: String, title: String): Auth
     login(email: String, password: String): Auth
+    updateProfile(id: Int, firstName: String, lastName: String, company: String, title: String, yoe: String, openForWork: Boolean, recentlyLaidOff: Boolean, imageUrl: String, resume: String): Profile
   }
 `;
 

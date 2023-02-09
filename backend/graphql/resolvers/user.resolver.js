@@ -65,6 +65,7 @@
 //       { website: "" },
 //     ],
 //   },
+
 const jwt = require("jsonwebtoken");
 const { hash, compare } = require("bcrypt");
 const { GraphQLError } = require("graphql");
@@ -98,6 +99,7 @@ const signup = async (_, args, contextValue) => {
         .returning("id")
         .then((res) => {
           const { id } = res[0];
+          console.log("id is ", id);
           return trx
             .insert({
               first_name: firstName,
@@ -120,7 +122,8 @@ const signup = async (_, args, contextValue) => {
     .then(function (resp) {
       return resp[0];
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log("err is ", err);
       throw new GraphQLError({
         extensions: {
           code: "INTERNAL_ERROR",

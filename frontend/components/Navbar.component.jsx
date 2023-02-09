@@ -90,6 +90,7 @@ const NavBar = () => {
                   role="menuitem"
                   tabIndex="-1"
                   id="user-menu-item-0"
+                  onClick={() => setIsUserMenuOpen((prev) => !prev)}
                 >
                   Your Profile
                 </Link>

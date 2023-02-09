@@ -4,13 +4,13 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [token, setToken] = useState(null);
 
   useEffect(() => {
     const loadUserFromLocalStorage = async () => {
       const userInfo = await localStorage.getItem("userInfo");
       const token = await localStorage.getItem("token");
-      console.log(userInfo, token);
 
       if (!userInfo || !token) {
         await localStorage.removeItem("userInfo");
@@ -19,8 +19,9 @@ export const UserProvider = ({ children }) => {
         setToken(null);
         return;
       }
-      setUserInfo(JSON.stringify(userInfo));
+      setUserInfo(JSON.parse(userInfo));
       setToken(token);
+      setIsLoading(false);
     };
 
     loadUserFromLocalStorage();
@@ -45,6 +46,7 @@ export const UserProvider = ({ children }) => {
         loginUser: loginUser,
         logoutUser: logoutUser,
         userInfo: userInfo,
+        isLoading: isLoading,
       }}
     >
       {children}

@@ -54,7 +54,7 @@ const MiniProfile = ({
               <div>
                 <div className="relative">
                   {userInfo === null && (
-                    <div className="absolute z-30 text-sm bottom-0">
+                    <div className="absolute z-30 text-sm flex inset-0 justify-center">
                       MUST SIGN IN TO SEE MORE
                     </div>
                   )}
@@ -107,6 +107,8 @@ const MiniProfile = ({
                   <div
                     className={`flex justify-end mr-5 ${
                       description ? "mb-3" : "mb-8"
+                    } ${
+                      userInfo !== null ? "" : "blur-md"
                     } mt-5 cursor-pointer`}
                     onClick={description ? flipCard : ""}
                   >

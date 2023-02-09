@@ -1,10 +1,12 @@
 import { UserContext } from "@/context/user.context";
 import { SIGN_UP_USER } from "@/graphql/mutations/auth.mutation";
 import { useMutation } from "@apollo/client";
+import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 
 const SignUp = () => {
   const { loginUser } = useContext(UserContext);
+  const router = useRouter();
 
   const [userData, setUserData] = useState({
     firstName: "",
@@ -37,12 +39,8 @@ const SignUp = () => {
 
     signup()
       .then((res) => {
-        // res.data.register
         loginUser(res.data.register);
-        // Grab the user data
-        // Save token into localStorage
-        // Save userInfo into localStorage -> used to query other information when need
-        // Basic info - userId, imageUrl, firstName, lastName, alias (initials)
+        router.push("/");
       })
       .catch((eerr) => console.log(eerr));
   };
