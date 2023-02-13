@@ -2,33 +2,42 @@ const { gql } = require("@apollo/client");
 
 export const UPDATE_PROFILE = gql`
   mutation Mutation(
-    $id: Int
+    $userId: Int
     $firstName: String
     $lastName: String
+    $aboutMe: String
     $company: String
     $title: String
-    $yoe: String
-    $imageUrl: String
+    $yoe: Int
     $openForWork: Boolean
+    $recentlyLaidOff: Boolean
+    $imageUrl: String
+    $resume: String
   ) {
     updateProfile(
-      id: $id
+      id: $userId
       firstName: $firstName
       lastName: $lastName
+      aboutMe: $aboutMe
       company: $company
       title: $title
       yoe: $yoe
-      imageUrl: $imageUrl
       openForWork: $openForWork
+      recentlyLaidOff: $recentlyLaidOff
+      imageUrl: $imageUrl
+      resume: $resume
     ) {
-      company
-      first_name
       id
-      image_url
+      firstName
+      lastName
       initials
-      last_name
-      open_for_work
+      aboutMe
+      company
       title
+      yoe
+      isOpenForWork
+      recentlyLaidOff
+      image_url
     }
   }
 `;

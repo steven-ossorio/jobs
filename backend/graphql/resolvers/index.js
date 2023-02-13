@@ -3,7 +3,6 @@ const { signup, signin } = require("./user.resolver");
 
 const resolvers = {
   Query: {
-    books: signup,
     fetchProfile: fetchProfile,
   },
   Mutation: {

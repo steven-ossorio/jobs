@@ -2,30 +2,33 @@ import { UPDATE_PROFILE } from "@/graphql/mutations/profile.mutation";
 import { useMutation } from "@apollo/client";
 import { useState } from "react";
 
-const ProfileFormModal = () => {
+// {
+//     firstName: "Steven",
+//     lastName: "Yellow",
+//     aboutMe: "Just a typical Software Engineer",
+//     company: "Google",
+//     title: "Software Engineer",
+//     yoe: null,
+//     openForWork: false,
+//     recentlyLaidOff: false,
+//     imageUrl: "https://mdbootstrap.com/img/new/slides/041.jpg",
+//     resume: "resume_back_end_developer.pdf",
+//   }
+
+const ProfileFormModal = ({ data }) => {
   const [showModal, setShowModal] = useState(false);
-  const [userData, setUserData] = useState({
-    firstName: "Steven",
-    lastName: "Yellow",
-    aboutMe: "Just a typical Software Engineer",
-    company: "Google",
-    title: "Software Engineer",
-    yoe: "",
-    openForWork: false,
-    recentlyLaidOff: false,
-    imageUrl: "https://mdbootstrap.com/img/new/slides/041.jpg",
-    resume: "resume_back_end_developer.pdf",
-  });
+  const [userData, setUserData] = useState(data);
+
   const [updateProfile] = useMutation(UPDATE_PROFILE, {
     variables: {
-      id: 74,
+      userId: 14,
       firstName: userData.firstName,
       lastName: userData.lastName,
       aboutMe: userData.aboutMe,
       company: userData.company,
       title: userData.title,
-      yoe: userData.yoe,
-      openForWork: userData.openForWork,
+      yoe: userData.yoe && Number(userData.yoe),
+      isOpenForWork: userData.isOpenForWork,
       recentlyLaidOff: userData.recentlyLaidOff,
       imageUrl: userData.imageUrl,
       resume: userData.resume,
@@ -212,20 +215,28 @@ const ProfileFormModal = () => {
                       onChange={onInputChange}
                     >
                       <option selected>Choose experience range</option>
-                      <option value="junior">Junior (0 - 3)</option>
-                      <option value="mid">Mid (3 - 6)</option>
-                      <option value="senior">Senior (6+)</option>
+                      <option value={1}>Junior (0 - 3)</option>
+                      <option value={2}>Mid (3 - 6)</option>
+                      <option value={3}>Senior (6+)</option>
                     </select>
                   </div>
                   <label className="relative text-zinc-200 inline-flex items-center cursor-pointer">
-                    <input type="checkbox" value="" className="sr-only peer" />
+                    <input
+                      type="checkbox"
+                      value={userData.isOpenForWork}
+                      className="sr-only peer"
+                    />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                       Open for work
                     </span>
                   </label>
                   <label className="relative text-zinc-200 inline-flex items-center cursor-pointer">
-                    <input type="checkbox" value="" className="sr-only peer" />
+                    <input
+                      type="checkbox"
+                      value={userData.recentlyLaidOff}
+                      className="sr-only peer"
+                    />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                       Recently laidoff (under a year)

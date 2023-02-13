@@ -16,6 +16,7 @@ const MiniProfile = ({
   const flipCard = () => {
     setIsFlipped((prev) => !prev);
   };
+
   return (
     <div className="group h-50 w-80">
       <div
@@ -110,7 +111,7 @@ const MiniProfile = ({
                     } ${
                       userInfo !== null ? "" : "blur-md"
                     } mt-5 cursor-pointer`}
-                    onClick={description ? flipCard : ""}
+                    onClick={description ? flipCard : () => null}
                   >
                     {description && (
                       <div className="flex">
