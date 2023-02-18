@@ -87,7 +87,6 @@ const checkPassword = (password, realPassword) =>
   compare(password, realPassword);
 
 const signup = async (_, args, contextValue) => {
-  console.log("starting register ", args);
   const { email, password, firstName, lastName, title } = args;
   const { db } = contextValue;
   const hashedPassword = await hash(password, Number(process.env.SALT_ROUNDS));

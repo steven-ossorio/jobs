@@ -19,6 +19,7 @@ const SignIn = () => {
   });
 
   const onInputChange = (e) => {
+    console.log("changing input");
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 

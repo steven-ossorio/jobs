@@ -1,9 +1,14 @@
-const { updateProfile, fetchProfile } = require("./profile.resolver");
+const {
+  updateProfile,
+  fetchProfile,
+  fetchProfiles,
+} = require("./profile.resolver");
 const { signup, signin } = require("./user.resolver");
 
 const resolvers = {
   Query: {
     fetchProfile: fetchProfile,
+    fetchProfiles: fetchProfiles,
   },
   Mutation: {
     register: signup,

@@ -14,6 +14,7 @@ const { startStandaloneServer } = require("@apollo/server/standalone");
 const knex = require("knex");
 const typeDefs = require("./graphql/types");
 const resolvers = require("./graphql/resolvers");
+const buildDB = require("./db");
 
 const db = knex({
   client: "postgres",
@@ -26,55 +27,7 @@ const db = knex({
   },
 });
 
-// db.schema
-//   .createTable("users", function (table) {
-//     table.increments();
-//     table.string("email").unique();
-//     table.string("password");
-//     table.timestamps(true, true);
-//   })
-//   .then();
-
-// db.schema
-//   .createTable("profiles", function (table) {
-//     table.increments();
-//     table.integer("user_id").unsigned();
-//     table
-//       .foreign("user_id")
-//       .references("id")
-//       .inTable("users")
-//       .onDelete("CASCADE");
-//     table.string("first_name");
-//     table.string("last_name");
-//     table.string("initials");
-//     table.string("about_me");
-//     table.string("company");
-//     table.string("title");
-//     table.tinyint("years_of_experience");
-//     table.boolean("is_open_for_work").defaultTo(false);
-//     table.boolean("recently_laid_off").defaultTo(false);
-//     table.string("image_url");
-//     table.string("resume_url");
-//     table.timestamps(true, true);
-//   })
-//   .then();
-
-// db.schema
-//   .createTable("socials", function (table) {
-//     table.increments();
-//     table.integer("user_id").unsigned();
-//     table
-//       .foreign("user_id")
-//       .references("id")
-//       .inTable("users")
-//       .onDelete("CASCADE");
-//     table.string("facebook");
-//     table.string("github");
-//     table.string("website");
-//     table.string("linkedin");
-//     table.timestamps(true, true);
-//   })
-//   .then();
+buildDB(db);
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.

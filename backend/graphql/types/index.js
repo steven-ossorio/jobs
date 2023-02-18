@@ -11,11 +11,17 @@
  * @author Steven Ossorio-Agudelo
  */
 const typeDefs = `#graphql
+  """
+  Values returned dealing with Auth (SignUp/SignIn)
+  """
   type Auth {
-    token: String
-    user: User    
+    token: String!
+    user: User!
   }
 
+  """
+  All values that populates a Card. 
+  """
   type Profile {
     id: ID
     firstName: String
@@ -28,8 +34,21 @@ const typeDefs = `#graphql
     isOpenForWork: Boolean
     recentlyLaidOff: Boolean
     image_url: String
+    socials: [Social]
   }
 
+  """
+  Socials of a User 
+  """
+  type Social {
+    id: ID!
+    name: String!
+    url: String
+  }
+
+  """
+  User basic values
+  """
   type User {
     id: ID
     email: String
@@ -40,15 +59,20 @@ const typeDefs = `#graphql
     image_url: String
   }
 
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
+  """
+  Query is used to perform GET requests
+  """
   type Query {
     fetchProfile(userId: Int): Profile 
+    fetchProfiles: [Profile]
   }
+
+  """
+  Mutation is used to perform POST requests
+  """
   type Mutation {
-    register(email: String, password: String, firstName: String, lastName: String, title: String): Auth
     login(email: String, password: String): Auth
+    register(email: String, password: String, firstName: String, lastName: String, title: String): Auth
     updateProfile(id: Int, firstName: String, lastName: String, aboutMe: String, company: String, title: String, yoe: Int, openForWork: Boolean, recentlyLaidOff: Boolean, imageUrl: String, resume: String): Profile
   }
 `;
