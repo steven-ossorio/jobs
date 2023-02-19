@@ -2,13 +2,18 @@ import { UserContext } from "@/context/user.context";
 import { useContext, useState } from "react";
 
 const MiniProfile = ({
-  imageUrl,
+  id,
   firstName,
   lastName,
   initials,
-  title,
+  aboutMe,
   company,
-  description,
+  title,
+  yoe,
+  isOpenForWork,
+  recentlyLaidOff,
+  imageUrl,
+  socials,
 }) => {
   const { userInfo } = useContext(UserContext);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -107,13 +112,13 @@ const MiniProfile = ({
                   </div>
                   <div
                     className={`flex justify-end mr-5 ${
-                      description ? "mb-3" : "mb-8"
+                      aboutMe ? "mb-3" : "mb-8"
                     } ${
                       userInfo !== null ? "" : "blur-md"
                     } mt-5 cursor-pointer`}
-                    onClick={description ? flipCard : () => null}
+                    onClick={aboutMe ? flipCard : () => null}
                   >
-                    {description && (
+                    {aboutMe && (
                       <div className="flex">
                         <span className="mr-1">View more</span>
                         <svg
@@ -148,7 +153,7 @@ const MiniProfile = ({
           <div className="flex flex-col justify-between absolute inset-0 ">
             <div>
               <h1 className="text-3xl font-bold">BIO</h1>
-              <p className="text-sm p-6">{description}</p>
+              <p className="text-sm p-6">{aboutMe}</p>
             </div>
             <div
               className="flex justify-start mr-5 mb-3 ml-6"

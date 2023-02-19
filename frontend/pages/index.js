@@ -3,6 +3,8 @@ import { Inter } from "@next/font/google";
 import MiniProfiles from "@/components/MiniProfiles.component";
 import { useContext } from "react";
 import { UserContext } from "@/context/user.context";
+import client from "@/apollo";
+import { gql } from "@apollo/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
