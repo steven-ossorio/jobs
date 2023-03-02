@@ -1,5 +1,4 @@
 const updateProfile = async (parent, args, contextValue, info) => {
-  console.log("hitting update profile");
   const {
     id,
     firstName,
@@ -13,7 +12,6 @@ const updateProfile = async (parent, args, contextValue, info) => {
     imageUrl,
     resume,
   } = args;
-  console.log(args);
   const { db } = contextValue;
   const initials = firstName[0] + lastName[0];
   const result = await db
@@ -64,7 +62,6 @@ const updateObjectProperties = (obj) => {
 };
 
 const fetchProfile = async (_, args, contextValue) => {
-  console.log("fetching profile ", args);
   const { db } = contextValue;
   const { userId } = args;
 
@@ -94,32 +91,50 @@ const fetchProfile = async (_, args, contextValue) => {
   return updateObjectProperties(userProfile);
 };
 
-const fetchProfiles = async (_, __, { db }) => {
-  const profiles = db
-    .select(
-      "profiles.id as id",
-      "profiles.first_name as firstName",
-      "profiles.last_name as lastName",
-      "profiles.initials",
-      "profiles.about_me as aboutMe",
-      "profiles.company",
-      "profiles.title",
-      "profiles.years_of_experience as yoe",
-      "profiles.is_open_for_work as isOpenForWork",
-      "profiles.recently_laid_off as recentlyLaidOff",
-      db.raw(
-        "json_agg(json_build_object('id', socials.id, 'name', socials.social_id, 'url', socials.url)) as socials"
-      )
+const fetchProfiles = async (_, args, { db }) => {
+  const {
+    isOpenForWork,
+    recentlyLaidOff,
+    company,
+    country,
+    state,
+    yoe,
+    limit,
+  } = args;
+
+  const query = db("profiles");
+  query.select(
+    "profiles.id as id",
+    "profiles.first_name as firstName",
+    "profiles.last_name as lastName",
+    "profiles.initials",
+    "profiles.about_me as aboutMe",
+    "profiles.company",
+    "profiles.title",
+    "profiles.years_of_experience as yoe",
+    "profiles.is_open_for_work as isOpenForWork",
+    "profiles.recently_laid_off as recentlyLaidOff",
+    db.raw(
+      "json_agg(json_build_object('id', socials.id, 'name', socials.social_id, 'url', socials.url)) as socials"
     )
-    .from("profiles")
-    .leftJoin("socials", "socials.profile_id", "profiles.id")
-    .groupBy("profiles.id")
-    .orderBy("profiles.created_at", "desc")
-    .limit(6)
+  );
+  query.leftJoin("socials", "socials.profile_id", "profiles.id");
+  query.groupBy("profiles.id");
+  query.orderBy("profiles.created_at", "desc");
+  if (isOpenForWork) query.where({ is_open_for_work: isOpenForWork });
+  if (recentlyLaidOff) query.where({ recently_laid_off: recentlyLaidOff });
+  if (company) query.where({ company: company });
+  if (country) query.where({ country: country });
+  if (state) query.where({ state: state });
+  if (yoe) query.where({ years_of_experience: yoe });
+
+  if (limit) query.limit(limit);
+
+  const profiles = query
     .then((rows) => {
       return rows;
     })
-    .catch((err) => {
+    .catch((error) => {
       console.error(err);
     });
 

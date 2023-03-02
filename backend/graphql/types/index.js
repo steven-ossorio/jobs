@@ -64,7 +64,7 @@ const typeDefs = `#graphql
   """
   type Query {
     fetchProfile(userId: Int): Profile 
-    fetchProfiles: [Profile]
+    fetchProfiles(isOpenForWork: Boolean, recentlyLaidOff: Boolean, company: String, country: String, state: String, yoe: Int, limit: Int): [Profile]
   }
 
   """
