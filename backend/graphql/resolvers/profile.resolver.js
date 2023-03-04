@@ -92,6 +92,7 @@ const fetchProfile = async (_, args, contextValue) => {
 };
 
 const fetchProfiles = async (_, args, { db }) => {
+  console.log("getting profiles");
   const {
     isOpenForWork,
     recentlyLaidOff,
@@ -130,14 +131,16 @@ const fetchProfiles = async (_, args, { db }) => {
 
   if (limit) query.limit(limit);
 
-  const profiles = query
+  const profiles = await query
     .then((rows) => {
       return rows;
     })
     .catch((error) => {
       console.error(err);
     });
-
+  profiles.forEach((profile) => {
+    console.log(profile.socials);
+  });
   return profiles;
 };
 

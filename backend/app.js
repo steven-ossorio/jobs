@@ -4,6 +4,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const { Client } = require("pg");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -27,7 +28,23 @@ const db = knex({
   },
 });
 
-buildDB(db);
+const client = new Client({
+  host: "localhost",
+  port: 5432,
+  user: "",
+  password: "",
+  database: "jobs",
+});
+
+client.connect((err) => {
+  if (err) {
+    console.error("connection error", err.stack);
+  } else {
+    console.log("connected to pg");
+  }
+});
+
+buildDB(client, false);
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
@@ -42,7 +59,7 @@ const server = new ApolloServer({
 //  3. prepares your app to handle incoming requests
 const main = async () => {
   const { url } = await startStandaloneServer(server, {
-    context: async () => ({ db: db }),
+    context: async () => ({ db: db, client: client }),
     listen: { port: 4000 },
   });
 

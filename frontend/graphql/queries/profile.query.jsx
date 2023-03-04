@@ -19,8 +19,24 @@ export const FETCH_PROFILE = gql`
 `;
 
 export const FETCH_PROFILES = gql`
-  query FetchProfiles {
-    fetchProfiles {
+  query FetchProfiles(
+    $limit: Int
+    $country: String
+    $state: String
+    $yoe: Int
+    $company: String
+    $recentlyLaidOff: Boolean
+    $isOpenForWork: Boolean
+  ) {
+    fetchProfiles(
+      limit: $limit
+      country: $country
+      state: $state
+      yoe: $yoe
+      company: $company
+      recentlyLaidOff: $recentlyLaidOff
+      isOpenForWork: $isOpenForWork
+    ) {
       id
       firstName
       lastName

@@ -94,108 +94,72 @@ const users = [
   },
 ];
 
-const buildDB = async (db, dropTables = false) => {
-  if (dropTables) {
-    await db.schema.dropTableIfExists("jobs");
-    await db.schema.dropTableIfExists("socials");
-    await db.schema.dropTableIfExists("socials_table");
-    await db.schema.dropTableIfExists("profiles");
-    await db.schema.dropTableIfExists("users");
-  }
+const buildDB = async (client, dropTables = true) => {
+  if (!dropTables) return;
+  await client.query("DROP TABLE IF EXISTS jobs");
+  await client.query("DROP TABLE IF EXISTS socials");
+  await client.query("DROP TABLE IF EXISTS socials_table");
+  await client.query("DROP TABLE IF EXISTS profiles");
+  await client.query("DROP TABLE IF EXISTS users");
 
-  await db.schema.hasTable("users").then((exists) => {
-    if (!exists) {
-      return db.schema.createTable("users", (table) => {
-        table.increments();
-        table.string("email").unique();
-        table.string("password");
-        table.timestamps(true, true);
-      });
-    }
-  });
+  const createUserTableQuery = `
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
+    `;
 
-  await db.schema.hasTable("profiles").then((exists) => {
-    if (!exists) {
-      return db.schema.createTable("profiles", (table) => {
-        table.increments();
-        table.integer("user_id").unsigned();
-        table
-          .foreign("user_id")
-          .references("id")
-          .inTable("users")
-          .onDelete("CASCADE");
-        table.string("first_name");
-        table.string("last_name");
-        table.string("initials");
-        table.string("about_me");
-        table.string("company");
-        table.string("title");
-        table.tinyint("years_of_experience");
-        table.boolean("is_open_for_work").defaultTo(false);
-        table.boolean("recently_laid_off").defaultTo(false);
-        table.string("image_url");
-        table.string("resume_url");
-        table.timestamps(true, true);
-      });
-    }
-  });
+  const createProfileTableQuery = `
+    CREATE TABLE IF NOT EXISTS profiles (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id),
+      first_name VARCHAR(255) NOT NULL,
+      last_name VARCHAR(255) NOT NULL,
+      initials CHAR(2) NOT NULL,
+      about_me TEXT,
+      company VARCHAR(255),
+      title VARCHAR(255),
+      years_of_experience INTEGER,
+      is_open_for_work BOOLEAN DEFAULT true,
+      recently_laid_off BOOLEAN DEFAULT false,
+      image_url TEXT,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
+  `;
 
-  await db.schema.hasTable("socials_table").then((exists) => {
-    if (!exists) {
-      return db.schema.createTable("socials_table", (table) => {
-        table.increments();
-        table.string("name");
-        table.timestamps(true, true);
-      });
-    }
-  });
+  const createAllSocialsTable = `
+    CREATE TABLE IF NOT EXISTS socials_table (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255) UNIQUE NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
+  `;
 
-  await db.schema.hasTable("socials").then((exists) => {
-    if (!exists) {
-      return db.schema.createTable("socials", (table) => {
-        table.increments();
-        table.integer("user_id").unsigned();
-        table
-          .foreign("user_id")
-          .references("id")
-          .inTable("users")
-          .onDelete("CASCADE");
-        table.integer("profile_id").unsigned();
-        table.foreign("profile_id").references("id").inTable("profiles");
-        table.integer("social_id").unsigned();
-        table.foreign("social_id").references("id").inTable("socials_table");
-        table.string("url");
-        table.timestamps(true, true);
-      });
-    }
-  });
+  const createSocialsTableQuery = `
+    CREATE TABLE socials (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id),
+      social_id INTEGER REFERENCES socials_table(id),
+      url TEXT NOT NULL
+    );
+  `;
 
-  await db.schema.hasTable("jobs").then((exists) => {
-    if (!exists) {
-      return db.schema.createTable("jobs", (table) => {
-        table.increments();
-        table.integer("user_id").unsigned();
-        table
-          .foreign("user_id")
-          .references("id")
-          .inTable("users")
-          .onDelete("CASCADE");
-        table.string("title");
-        table.string("company");
-        table.string("description");
-        table.string("url");
-        table.timestamps(true, true);
-      });
-    }
-  });
+  await client.query(createUserTableQuery);
+  await client.query(createProfileTableQuery);
+  await client.query(createAllSocialsTable);
+  await client.query(createSocialsTableQuery);
 
   if (dropTables) {
     socialTableData.forEach(async ({ name }) => {
-      await db("socials_table")
-        .insert({
-          name: name,
-        })
-        .then();
+      const userQuery =
+        "INSERT INTO socials_table (name) VALUES ($1) RETURNING id";
+      const userData = [name];
+      await client.query(userQuery, userData);
     });
 
     users.forEach(
@@ -216,40 +180,44 @@ const buildDB = async (db, dropTables = false) => {
           password,
           Number(process.env.SALT_ROUNDS)
         );
-        await db
-          .transaction(function (trx) {
-            trx
-              .insert({ email: email, password: hashedPassword })
-              .into("users")
-              .returning("id")
-              .then((res) => {
-                const { id } = res[0];
-                return trx
-                  .insert({
-                    first_name: firstName,
-                    last_name: lastName,
-                    initials: firstName[0] + lastName[0],
-                    title: title,
-                    user_id: id,
-                    years_of_experience: yoe,
-                    company: company,
-                    about_me: aboutMe,
-                    recently_laid_off: recentlyLaidOff,
-                    is_open_for_work: isOpenForWork,
-                    image_url: imageUrl,
-                  })
-                  .into("profiles")
-                  .then();
-              })
-              .then(trx.commit)
-              .catch(trx.rollback);
-          })
-          .then(function (resp) {
-            return resp[0];
-          })
-          .catch((err) => {
-            console.log("there was an err of ", err);
-          });
+
+        try {
+          await client.query("BEGIN");
+
+          // Insert user data
+          const userQuery =
+            "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id";
+          const userData = [email, hashedPassword];
+          const userResult = await client.query(userQuery, userData);
+
+          const userId = userResult.rows[0].id;
+
+          // Insert profile data
+          const profileQuery =
+            "INSERT INTO profiles (user_id, first_name, last_name, initials, about_me, company, title, years_of_experience, is_open_for_work, recently_laid_off, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)";
+          const profileData = [
+            userId,
+            firstName,
+            lastName,
+            firstName[0] + lastName[0],
+            aboutMe,
+            company,
+            title,
+            yoe,
+            isOpenForWork,
+            recentlyLaidOff,
+            imageUrl,
+          ];
+
+          await client.query(profileQuery, profileData);
+
+          await client.query("COMMIT");
+
+          console.log("Transaction completed successfully!");
+        } catch (error) {
+          await client.query("ROLLBACK");
+          console.error("Transaction failed:", error);
+        }
       }
     );
   }

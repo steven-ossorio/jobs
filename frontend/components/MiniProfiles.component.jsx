@@ -4,7 +4,7 @@ import MiniProfile from "./MiniProfile.component";
 
 const MiniProfiles = () => {
   const { loading, data, error } = useQuery(FETCH_PROFILES);
-
+  console.log(loading, data, error);
   const miniProfiles = data?.fetchProfiles;
 
   return (
