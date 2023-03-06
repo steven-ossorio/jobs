@@ -13,7 +13,7 @@ export const FETCH_PROFILE = gql`
       yoe
       isOpenForWork
       recentlyLaidOff
-      image_url
+      imageUrl
     }
   }
 `;
@@ -47,7 +47,7 @@ export const FETCH_PROFILES = gql`
       yoe
       isOpenForWork
       recentlyLaidOff
-      image_url
+      imageUrl
       socials {
         id
         name

@@ -33,7 +33,7 @@ const typeDefs = `#graphql
     yoe: Int
     isOpenForWork: Boolean
     recentlyLaidOff: Boolean
-    image_url: String
+    imageUrl: String
     socials: [Social]
   }
 
