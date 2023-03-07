@@ -15,6 +15,8 @@ const users = [
     email: "s@m.com",
     password: "123456",
     title: "Software Engineer",
+    country: "United States",
+    state: "Texas",
     yoe: 2,
     aboutMe:
       "Your typical software engineer who is seeking a challenging career in development ",
@@ -30,6 +32,8 @@ const users = [
     email: "j@k.com",
     password: "123456",
     title: "Recruiter",
+    country: "United States",
+    state: "New York",
     yoe: 1,
     aboutMe: "Saerching for the best and finest for my employer",
     company: null,
@@ -43,6 +47,8 @@ const users = [
     email: "A@F.com",
     password: "123456",
     title: "",
+    country: "United States",
+    state: "California",
     yoe: null,
     aboutMe: "",
     company: null,
@@ -57,6 +63,8 @@ const users = [
     email: "m@s.com",
     password: "123456",
     title: "Driver",
+    country: "United States",
+    state: "Texas",
     yoe: 2,
     aboutMe: "",
     company: "Adver Space",
@@ -70,6 +78,8 @@ const users = [
     email: "J@F.com",
     password: "123456",
     title: "Product Manager",
+    country: "United States",
+    state: "Alaska",
     yoe: 3,
     aboutMe: "",
     company: "Microsoft",
@@ -84,6 +94,8 @@ const users = [
     email: "c@f.com",
     password: "123456",
     title: "Founder",
+    country: "United States",
+    state: "New Jersey",
     yoe: null,
     aboutMe:
       "CEO and Founder of Space Tech Recruiting. Aiming to revolutonize the industry and provide a better job search",
@@ -96,6 +108,7 @@ const users = [
 
 const buildDB = async (client, dropTables = true) => {
   if (!dropTables) return;
+  console.log(dropTables);
   await client.query("DROP TABLE IF EXISTS jobs");
   await client.query("DROP TABLE IF EXISTS socials");
   await client.query("DROP TABLE IF EXISTS socials_table");
@@ -119,6 +132,8 @@ const buildDB = async (client, dropTables = true) => {
       first_name VARCHAR(255) NOT NULL,
       last_name VARCHAR(255) NOT NULL,
       initials CHAR(2) NOT NULL,
+      country VARCHAR(255) NOT NULL,
+      state VARCHAR(255) NOT NULL,
       about_me TEXT,
       company VARCHAR(255),
       title VARCHAR(255),
@@ -175,6 +190,8 @@ const buildDB = async (client, dropTables = true) => {
         isOpenForWork,
         recentlyLaidOff,
         imageUrl,
+        country,
+        state,
       }) => {
         const hashedPassword = await hash(
           password,
@@ -194,7 +211,7 @@ const buildDB = async (client, dropTables = true) => {
 
           // Insert profile data
           const profileQuery =
-            "INSERT INTO profiles (user_id, first_name, last_name, initials, about_me, company, title, years_of_experience, is_open_for_work, recently_laid_off, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)";
+            "INSERT INTO profiles (user_id, first_name, last_name, initials, about_me, company, title, years_of_experience, is_open_for_work, recently_laid_off, image_url, country, state) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)";
           const profileData = [
             userId,
             firstName,
@@ -207,6 +224,8 @@ const buildDB = async (client, dropTables = true) => {
             isOpenForWork,
             recentlyLaidOff,
             imageUrl,
+            country,
+            state,
           ];
 
           await client.query(profileQuery, profileData);

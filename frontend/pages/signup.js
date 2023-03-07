@@ -3,6 +3,7 @@ import { SIGN_UP_USER } from "@/graphql/mutations/auth.mutation";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
+import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 
 const SignUp = () => {
   const { loginUser } = useContext(UserContext);
@@ -15,6 +16,8 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
     title: "",
+    country: "",
+    state: "",
   });
 
   const [signup] = useMutation(SIGN_UP_USER, {
@@ -26,9 +29,17 @@ const SignUp = () => {
       password: userData.password,
     },
   });
-
+  console.log(userData);
   const onInputChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
+  const onCountryChange = (country) => {
+    setUserData({ ...userData, country: country });
+  };
+
+  const onStateChange = (state) => {
+    setUserData({ ...userData, state: state });
   };
 
   const onSubmit = (e) => {
@@ -166,6 +177,35 @@ const SignUp = () => {
                   required=""
                 />
               </div>
+            </div>
+            <div>
+              <label
+                htmlFor="country"
+                className="block mb-2 text-sm md:text-lg font-medium text-gray-900 dark:text-white"
+              >
+                Country
+              </label>
+              <CountryDropdown
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                name="country"
+                value={userData.country}
+                onChange={onCountryChange}
+              />
+            </div>
+            <div className="my-5">
+              <label
+                htmlFor="state"
+                className="block mb-2 text-sm md:text-lg font-medium text-gray-900 dark:text-white"
+              >
+                State
+              </label>
+              <RegionDropdown
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                name="state"
+                country={userData.country}
+                value={userData.state}
+                onChange={onStateChange}
+              />
             </div>
             <button
               onClick={onSubmit}

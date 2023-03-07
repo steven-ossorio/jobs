@@ -27,6 +27,8 @@ const typeDefs = `#graphql
     firstName: String
     lastName: String
     initials: String
+    country: String
+    state: String
     aboutMe: String
     company: String
     title: String
