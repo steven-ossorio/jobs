@@ -22,7 +22,8 @@ const signup = async (_, args, contextValue) => {
   const { email, password, firstName, lastName, title, country, state } = args;
   const { client } = contextValue;
   const hashedPassword = await hash(password, Number(process.env.SALT_ROUNDS));
-
+  console.log(args);
+  return;
   try {
     await client.query("BEGIN");
     // Insert user data

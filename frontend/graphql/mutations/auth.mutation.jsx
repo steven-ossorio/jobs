@@ -6,18 +6,28 @@ export const SIGN_UP_USER = gql`
     $password: String!
     $firstName: String!
     $lastName: String!
+    $company: String!
     $title: String!
     $country: String!
     $state: String!
+    $skills: String
+    $aboutMe: String!
+    $linkedin: String
+    $website: String
   ) {
     register(
       email: $email
       password: $password
       firstName: $firstName
       lastName: $lastName
+      company: $company
       title: $title
       country: $country
       state: $state
+      skills: $skills
+      aboutMe: $aboutMe
+      linkedin: $linkedin
+      website: $website
     ) {
       token
       user {

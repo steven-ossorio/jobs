@@ -45,7 +45,7 @@ const typeDefs = `#graphql
   type Social {
     id: ID!
     name: String!
-    url: String
+    url: String!
   }
 
   """
@@ -74,8 +74,36 @@ const typeDefs = `#graphql
   """
   type Mutation {
     login(email: String, password: String): Auth
-    register(email: String!, password: String!, firstName: String!, lastName: String!, title: String!, country: String!, state: String!): Auth
-    updateProfile(id: Int, firstName: String, lastName: String, aboutMe: String, company: String, title: String, yoe: Int, openForWork: Boolean, recentlyLaidOff: Boolean, imageUrl: String, resume: String): Profile
+    register(
+      email: String!, 
+      password: String!, 
+      firstName: String!, 
+      lastName: String!, 
+      country: String!, 
+      state: String!
+      company: String!,
+      title: String!, 
+      isOpenForWork: Boolean!,
+      recentlyLaidOff: Boolean!,
+      yoe: Int!,
+      skills: String,
+      linkedin: String,
+      website: String,
+      aboutMe: String
+    ): Auth
+    updateProfile(
+      id: Int, 
+      firstName: String, 
+      lastName: String, 
+      aboutMe: String, 
+      company: String, 
+      title: String, 
+      yoe: Int, 
+      openForWork: Boolean, 
+      recentlyLaidOff: Boolean, 
+      imageUrl: String, 
+      resume: String
+    ): Profile
   }
 `;
 
