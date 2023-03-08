@@ -74,7 +74,7 @@ const typeDefs = `#graphql
   """
   type Mutation {
     login(email: String, password: String): Auth
-    register(email: String, password: String, firstName: String, lastName: String, title: String): Auth
+    register(email: String!, password: String!, firstName: String!, lastName: String!, title: String!, country: String!, state: String!): Auth
     updateProfile(id: Int, firstName: String, lastName: String, aboutMe: String, company: String, title: String, yoe: Int, openForWork: Boolean, recentlyLaidOff: Boolean, imageUrl: String, resume: String): Profile
   }
 `;

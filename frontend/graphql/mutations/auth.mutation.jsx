@@ -2,11 +2,13 @@ const { gql } = require("@apollo/client");
 
 export const SIGN_UP_USER = gql`
   mutation Register(
-    $email: String
-    $password: String
-    $firstName: String
-    $lastName: String
-    $title: String
+    $email: String!
+    $password: String!
+    $firstName: String!
+    $lastName: String!
+    $title: String!
+    $country: String!
+    $state: String!
   ) {
     register(
       email: $email
@@ -14,6 +16,8 @@ export const SIGN_UP_USER = gql`
       firstName: $firstName
       lastName: $lastName
       title: $title
+      country: $country
+      state: $state
     ) {
       token
       user {
