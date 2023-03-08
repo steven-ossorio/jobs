@@ -25,9 +25,9 @@ const SignUp = () => {
     recentlyLaidOff: false,
     yoe: null,
     skills: "",
+    aboutMe: "",
     linkedin: "",
     website: "",
-    aboutMe: "",
   });
 
   const [userDataError, setUserDataError] = useState({
@@ -55,7 +55,7 @@ const SignUp = () => {
       title: userData.title,
       isOpenForWork: userData.isOpenForWork,
       recentlyLaidOff: userData.recentlyLaidOff,
-      yoe: userData.yoe,
+      yoe: Number(userData.yoe),
       skills: userData.skills,
       linkedin: userData.linkedin,
       website: userData.website,
@@ -67,8 +67,122 @@ const SignUp = () => {
     setStep(step - 1);
   };
 
-  const nextStep = () => {
+  const nextStep = async () => {
+    const isValid = await validationChecks();
+    if (isValid === false) return;
     setStep(step + 1);
+  };
+
+  const validationChecks = () => {
+    let valid = true;
+    const errors = {
+      firstNameError: "",
+      lastNameError: "",
+      emailError: "",
+      passwordError: "",
+      confirmPasswordError: "",
+      countryError: "",
+      stateError: "",
+      companyError: "",
+      titleError: "",
+      yoeError: "",
+    };
+
+    if (step == 1) {
+      if (!userData.firstName) {
+        errors.firstNameError = "First name cannot be empty.";
+        valid = false;
+      }
+
+      if (!userData.lastName) {
+        errors.lastNameError = "Last name cannot be empty.";
+        valid = false;
+      }
+
+      if (!userData.email) {
+        errors.emailError = "Last name cannot be empty.";
+        valid = false;
+      } else if (
+        !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userData.email)
+      ) {
+        errors.emailError = "Must provide a valid email address.";
+        valid = false;
+      }
+
+      if (!userData.password) {
+        errors.passwordError = "Password cannot be empty.";
+        valid = false;
+      } else if (userData.password.length < 6) {
+        errors.passwordError = "Password length must be at least 6 characters.";
+        valid = false;
+      }
+
+      if (!userData.confirmPassword) {
+        errors.confirmPasswordError = "Password cannot be empty.";
+        valid = false;
+      } else if (userData.confirmPassword.length < 6) {
+        errors.confirmPasswordError =
+          "Password length must be at least 6 characters.";
+        valid = false;
+      }
+
+      if (
+        !errors.passwordError &&
+        !errors.confirmPasswordError &&
+        userData.password != userData.confirmPassword
+      ) {
+        errors.passwordError = "Both passwords must match";
+        errors.confirmPasswordError = "Both passwords must match";
+        valid = false;
+      }
+
+      if (!userData.country) {
+        errors.countryError = "Must select a Country.";
+        valid = false;
+      }
+
+      if (!userData.state) {
+        errors.stateError = "Must select a State.";
+        valid = false;
+      }
+    }
+
+    if (step == 2) {
+      if (!userData.company) {
+        errors.companyError = "Please add current or previous company.";
+        valid = false;
+      }
+
+      if (!userData.title) {
+        errors.titleError = "Professional title.";
+        valid = false;
+      }
+
+      if (!userData.yoe) {
+        errors.yoeError =
+          "Please select where you currently are in your career;";
+        valid = false;
+      }
+    }
+
+    if (valid) {
+      setUserDataError({
+        firstNameError: "",
+        lastNameError: "",
+        emailError: "",
+        passwordError: "",
+        confirmPasswordError: "",
+        countryError: "",
+        stateError: "",
+        companyError: "",
+        titleError: "",
+        yoeError: "",
+      });
+    } else {
+      setUserDataError(errors);
+    }
+
+    return valid;
   };
 
   const onInputChange = (e) => {
@@ -89,16 +203,14 @@ const SignUp = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (userData.password !== userData.confirmPassword) {
-      return;
-    }
 
     signup()
       .then((res) => {
+        console.log("res was ", res);
         loginUser(res.data.register);
         router.push("/");
       })
-      .catch((eerr) => console.log(eerr));
+      .catch((eerr) => console.log("returned result was ", eerr));
   };
 
   return (
@@ -199,6 +311,13 @@ const SignUp = () => {
                       onChange={onInputChange}
                       required="*"
                     />
+                    {userDataError.emailError && (
+                      <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                        <span class="font-medium">
+                          {userDataError.emailError}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -217,6 +336,13 @@ const SignUp = () => {
                       onChange={onInputChange}
                       required=""
                     />
+                    {userDataError.passwordError && (
+                      <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                        <span class="font-medium">
+                          {userDataError.passwordError}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -235,6 +361,13 @@ const SignUp = () => {
                       onChange={onInputChange}
                       required=""
                     />
+                    {userDataError.confirmPasswordError && (
+                      <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                        <span class="font-medium">
+                          {userDataError.confirmPasswordError}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -249,6 +382,13 @@ const SignUp = () => {
                       value={userData.country}
                       onChange={onCountryChange}
                     />
+                    {userDataError.countryError && (
+                      <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                        <span class="font-medium">
+                          {userDataError.countryError}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -264,6 +404,13 @@ const SignUp = () => {
                       value={userData.state}
                       onChange={onStateChange}
                     />
+                    {userDataError.stateError && (
+                      <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                        <span class="font-medium">
+                          {userDataError.stateError}
+                        </span>
+                      </p>
+                    )}
                   </div>
                 </>
               )}
@@ -286,6 +433,13 @@ const SignUp = () => {
                       onChange={onInputChange}
                       required=""
                     />
+                    {userDataError.companyError && (
+                      <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                        <span class="font-medium">
+                          {userDataError.companyError}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -304,6 +458,13 @@ const SignUp = () => {
                       onChange={onInputChange}
                       required=""
                     />
+                    {userDataError.titleError && (
+                      <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                        <span class="font-medium">
+                          {userDataError.titleError}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div className="flex">
                     <div className="flex items-center h-5">
@@ -378,6 +539,11 @@ const SignUp = () => {
                     <option value={2}>Mid (3-5)</option>
                     <option value={3}>Senior (6+)</option>
                   </select>
+                  {userDataError.yoeError && (
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                      <span class="font-medium">{userDataError.yoeError}</span>
+                    </p>
+                  )}
                   <div>
                     <label
                       htmlFor="skills"
@@ -468,9 +634,9 @@ const SignUp = () => {
             <div className="w-full flex justify-between">
               <button
                 type="button"
-                disabled={step == 1}
+                disabled={step === 1}
                 onClick={prevStep}
-                className="group mx-3 relative flex w-60 justify-center rounded-md border border-transparent bg-blue-700  py-2 px-4 text-sm md:text-lg font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="group disabled:opacity-50 mx-3 relative flex w-60 justify-center rounded-md border border-transparent bg-blue-700  py-2 px-4 text-sm md:text-lg font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 prev
               </button>

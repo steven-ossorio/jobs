@@ -19,11 +19,26 @@ const checkPassword = (password, realPassword) =>
   compare(password, realPassword);
 
 const signup = async (_, args, contextValue) => {
-  const { email, password, firstName, lastName, title, country, state } = args;
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    country,
+    state,
+    company,
+    title,
+    isOpenForWork,
+    recentlyLaidOff,
+    yoe,
+    skills,
+    linkedin,
+    website,
+    aboutMe,
+  } = args;
   const { client } = contextValue;
   const hashedPassword = await hash(password, Number(process.env.SALT_ROUNDS));
   console.log(args);
-  return;
   try {
     await client.query("BEGIN");
     // Insert user data
@@ -36,15 +51,20 @@ const signup = async (_, args, contextValue) => {
 
     // Insert profile data
     const profileQuery =
-      "INSERT INTO profiles (user_id, first_name, last_name, initials, title, country, state) VALUES ($1, $2, $3, $4, $5, $6, $7)";
+      "INSERT INTO profiles (user_id, first_name, last_name, initials, country, state, company, title, is_open_for_work, recently_laid_off, years_of_experience, about_me) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)";
     const profileData = [
       userId,
       firstName,
       lastName,
       firstName[0] + lastName[0],
-      title,
       country,
       state,
+      company,
+      title,
+      isOpenForWork,
+      recentlyLaidOff,
+      yoe,
+      aboutMe,
     ];
 
     await client.query(profileQuery, profileData);

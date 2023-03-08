@@ -6,12 +6,15 @@ export const SIGN_UP_USER = gql`
     $password: String!
     $firstName: String!
     $lastName: String!
-    $company: String!
-    $title: String!
     $country: String!
     $state: String!
+    $company: String!
+    $title: String!
+    $isOpenForWork: Boolean!
+    $recentlyLaidOff: Boolean!
+    $yoe: Int!
     $skills: String
-    $aboutMe: String!
+    $aboutMe: String
     $linkedin: String
     $website: String
   ) {
@@ -20,10 +23,13 @@ export const SIGN_UP_USER = gql`
       password: $password
       firstName: $firstName
       lastName: $lastName
-      company: $company
-      title: $title
       country: $country
       state: $state
+      company: $company
+      title: $title
+      isOpenForWork: $isOpenForWork
+      recentlyLaidOff: $recentlyLaidOff
+      yoe: $yoe
       skills: $skills
       aboutMe: $aboutMe
       linkedin: $linkedin
