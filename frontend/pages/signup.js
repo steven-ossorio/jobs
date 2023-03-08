@@ -30,6 +30,19 @@ const SignUp = () => {
     aboutMe: "",
   });
 
+  const [userDataError, setUserDataError] = useState({
+    firstNameError: "",
+    lastNameError: "",
+    emailError: "",
+    passwordError: "",
+    confirmPasswordError: "",
+    countryError: "",
+    stateError: "",
+    companyError: "",
+    titleError: "",
+    yoeError: "",
+  });
+
   const [signup] = useMutation(SIGN_UP_USER, {
     variables: {
       email: userData.email,
@@ -135,6 +148,13 @@ const SignUp = () => {
                         onChange={onInputChange}
                         required={true}
                       />
+                      {userDataError.firstNameError && (
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                          <span class="font-medium">
+                            {userDataError.firstNameError}
+                          </span>
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label
@@ -153,6 +173,13 @@ const SignUp = () => {
                         onChange={onInputChange}
                         required={true}
                       />
+                      {userDataError.lastNameError && (
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                          <span class="font-medium">
+                            {userDataError.lastNameError}
+                          </span>
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div>
