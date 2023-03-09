@@ -38,7 +38,7 @@ const signup = async (_, args, contextValue) => {
   } = args;
   const { client } = contextValue;
   const hashedPassword = await hash(password, Number(process.env.SALT_ROUNDS));
-  console.log(args);
+
   try {
     await client.query("BEGIN");
     // Insert user data
@@ -69,7 +69,6 @@ const signup = async (_, args, contextValue) => {
 
     await client.query(profileQuery, profileData);
     await client.query("COMMIT");
-    console.log("Transaction completed successfully!");
 
     const user = userResult.rows[0];
     const token = signToken(user);

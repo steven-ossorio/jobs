@@ -1,22 +1,16 @@
+import { ModelsContext } from "@/context/models.context";
 import { UserContext } from "@/context/user.context";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
 const NavBar = () => {
   const { userInfo, logoutUser } = useContext(UserContext);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-
-  const openUserMeu = () => {
-    setIsUserMenuOpen((prev) => !prev);
-  };
+  const { navbarModal, updateNavbarModal } = useContext(ModelsContext);
 
   const signoutUser = () => {
     logoutUser();
-    openUserMeu();
+    updateNavbarModal();
   };
-
-  console.log(userInfo);
 
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
@@ -37,7 +31,7 @@ const NavBar = () => {
           className="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
           aria-controls="navbar-default"
           aria-expanded="true"
-          onClick={() => setIsUserMenuOpen((prev) => !prev)}
+          onClick={updateNavbarModal}
         >
           <span className="sr-only">Open main menu</span>
           <svg
@@ -54,15 +48,12 @@ const NavBar = () => {
             ></path>
           </svg>
         </button>
-        <div
-          className={`${isOpen ? "block" : "hidden"} w-full md:block md:w-auto`}
-          id="navbar-default"
-        >
+        <div className={`hidden w-full md:block md:w-auto`} id="navbar-default">
           {userInfo ? (
             <div className="relative ml-3">
               <div>
                 <button
-                  onClick={openUserMeu}
+                  onClick={updateNavbarModal}
                   type="button"
                   className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   id="user-menu-button"
@@ -103,7 +94,7 @@ const NavBar = () => {
       <div
         id="drawer-navigation"
         className={`fixed top-0 left-0 z-40 w-80 h-screen p-4 overflow-y-auto transition-transform ease-in-out ${
-          isUserMenuOpen
+          navbarModal
             ? "duration-500 translate-x-0"
             : "duration-500 -translate-x-full"
         } bg-white dark:bg-gray-800`}
@@ -118,7 +109,7 @@ const NavBar = () => {
         </h5>
         <button
           type="button"
-          onClick={() => setIsUserMenuOpen(false)}
+          onClick={updateNavbarModal}
           data-drawer-show="drawer-navigation"
           aria-controls="drawer-navigation"
           className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -258,7 +249,7 @@ const NavBar = () => {
               </li>
             ) : (
               <ul>
-                <li onClick={() => setIsUserMenuOpen((prev) => !prev)}>
+                <li onClick={() => updateNavbarModal()}>
                   <div
                     href="#"
                     className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -286,7 +277,7 @@ const NavBar = () => {
                     </Link>
                   </div>
                 </li>
-                <li onClick={() => setIsUserMenuOpen((prev) => !prev)}>
+                <li onClick={() => updateNavbarModal()}>
                   <div
                     href="#"
                     className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"

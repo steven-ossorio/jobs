@@ -51,6 +51,7 @@ const fetchProfile = async (_, args, contextValue) => {
 };
 
 const fetchProfiles = async (_, args, { db, client }) => {
+  console.log("getting profiles");
   const {
     isOpenForWork,
     recentlyLaidOff,

@@ -1,4 +1,6 @@
 import NavBar from "@/components/Navbar.component";
+import { ModelsProvider } from "@/context/models.context";
+import { SearchUserProvider } from "@/context/searchUser.context";
 import { UserProvider } from "@/context/user.context";
 import "@/styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
@@ -9,8 +11,12 @@ export default function App({ Component, pageProps }) {
     <>
       <ApolloProvider client={client}>
         <UserProvider>
-          <NavBar />
-          <Component {...pageProps} />
+          <ModelsProvider>
+            <SearchUserProvider>
+              <NavBar />
+              <Component {...pageProps} />
+            </SearchUserProvider>
+          </ModelsProvider>
         </UserProvider>
       </ApolloProvider>
     </>
