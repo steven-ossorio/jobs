@@ -7,18 +7,50 @@ import MiniProfile from "./MiniProfile.component";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 
 const MiniProfiles = () => {
-  const { searchCriteria } = useContext(SearchUserContext);
+  const {
+    searchCriteria,
+    onInputChange,
+    onCountryChange,
+    onStateChange,
+    onCheckBoxChange,
+  } = useContext(SearchUserContext);
   const { searchCriteriaModal, updateSearchCriteriaModal } =
     useContext(ModelsContext);
 
-  const { loading, data, error } = useQuery(FETCH_PROFILES);
+  const { loading, data, error, refetch } = useQuery(FETCH_PROFILES);
   console.log(loading, data, error);
   const miniProfiles = data?.fetchProfiles;
 
-  console.log("running miniprofiles");
+  const onSubmit = () => {
+    refetch({
+      company: searchCriteria.company,
+      yoe: searchCriteria.yoe ? Number(searchCriteria.yoe) : null,
+      country: searchCriteria.country,
+      state: searchCriteria.country ? searchCriteria.state : null,
+      isOpenForWork: searchCriteria.isOpenForWork,
+      recentlyLaidOff: searchCriteria.recentlyLaidOff,
+    });
+  };
+
   return (
     <div className="flex flex-col mx-auto md:max-w-2xl xl:max-w-4xl justify-items-center mt-5">
-      <div onClick={updateSearchCriteriaModal}>FILTER BUTTON</div>
+      <div onClick={updateSearchCriteriaModal} className="flex cursor-pointer">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          className="w-6 h-6 mr-2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
+          />
+        </svg>
+        FILTER
+      </div>
       <div
         id="drawer-navigation"
         className={`fixed top-0 left-0 z-40 w-80 h-screen p-4 overflow-y-auto transition-transform ease-in-out ${
@@ -72,7 +104,7 @@ const MiniProfiles = () => {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-lg rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Company"
               value={searchCriteria.company}
-              // onChange={onInputChange}
+              onChange={onInputChange}
               required=""
             />
           </div>
@@ -88,7 +120,7 @@ const MiniProfiles = () => {
               name="yoe"
               defaultValue="Choose a level"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              // onChange={onInputChange}
+              onChange={onInputChange}
             >
               <option>Choose a level</option>
               <option value={1}>Junior (0-2)</option>
@@ -106,7 +138,7 @@ const MiniProfiles = () => {
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 name="country"
                 value={searchCriteria.country}
-                // onChange={onCountryChange}
+                onChange={onCountryChange}
               />
             </div>
             <div>
@@ -121,7 +153,7 @@ const MiniProfiles = () => {
                 name="state"
                 country={searchCriteria.country}
                 value={searchCriteria.state}
-                // onChange={onStateChange}
+                onChange={onStateChange}
               />
             </div>
 
@@ -133,7 +165,7 @@ const MiniProfiles = () => {
                   type="checkbox"
                   name="isOpenForWork"
                   defaultChecked={searchCriteria.isOpenForWork}
-                  // onChange={onCheckBoxChange}
+                  onChange={onCheckBoxChange}
                   className="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 />
               </div>
@@ -154,7 +186,7 @@ const MiniProfiles = () => {
                   type="checkbox"
                   name="recentlyLaidOff"
                   defaultChecked={searchCriteria.recentlyLaidOff}
-                  // onChange={onCheckBoxChange}
+                  onChange={onCheckBoxChange}
                   className="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 />
               </div>
@@ -168,7 +200,7 @@ const MiniProfiles = () => {
               </div>
             </div>
             <button
-              // onClick={onSubmit}
+              onClick={onSubmit}
               type="button"
               className="group mx-3 relative flex w-60 justify-center rounded-md border border-transparent bg-blue-700  py-2 px-4 text-sm md:text-lg font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
@@ -177,94 +209,6 @@ const MiniProfiles = () => {
           </div>
         </div>
       </div>
-      {/* <div class="flex justify-center">
-        <div className="w-80">
-          <div class="relative" data-te-dropdown-ref>
-            <button
-              class="flex my-0 mx-auto items-center whitespace-nowrap rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 active:bg-primary-700 motion-reduce:transition-none"
-              type="button"
-              id="dropdownMenuButton1"
-              data-te-dropdown-toggle-ref
-              aria-expanded="false"
-              data-te-ripple-init
-              data-te-ripple-color="light"
-              onClick={handleButtonClick}
-            >
-              Filter options
-              <span class="ml-2 w-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="h-5 w-5"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </span>
-            </button>
-            <div
-              className={`absolute z-[1000] float-left m-0 ${
-                showDropdown ? "block" : "hidden"
-              } w-full list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700`}
-              aria-labelledby="dropdownMenuButton1"
-              data-te-dropdown-menu-ref
-              data-te-dropdown-show={showDropdown}
-            >
-              <div className="flex justify-between mt-2">
-                <div className="ml-3">Filters</div>
-                <div className="flex">
-                  <div className="mr-3 cursor-pointer">save view</div>
-                  <div className="mr-3 cursor-pointer">clear all</div>
-                </div>
-              </div>
-              <div>
-                <div>
-                  <a
-                    class="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underdivne disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
-                    href="#"
-                    data-te-dropdown-item-ref
-                  >
-                    years of expereince: Junior(0-2) Mid(3-5) Senior(6+)
-                  </a>
-                </div>
-              </div>
-              <div>
-                <div>
-                  <a
-                    class="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underdivne disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
-                    href="#"
-                    data-te-dropdown-item-ref
-                  >
-                    Action
-                  </a>
-                </div>
-              </div>
-              <div>
-                <a
-                  class="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underdivne disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
-                  href="#"
-                  data-te-dropdown-item-ref
-                >
-                  Another action
-                </a>
-              </div>
-              <div>
-                <a
-                  class="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underdivne disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
-                  href="#"
-                  data-te-dropdown-item-ref
-                >
-                  Something else here
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
       <div className=" mx-auto grid grid-cols-1 md:max-w-2xl md:grid-cols-2 gap-3 xl:gap-y-6 xl:gap-x-32 xl:grid-cols-3 xl:max-w-4xl justify-items-center mt-5">
         {miniProfiles &&
           miniProfiles.map((miniProfile) => {
